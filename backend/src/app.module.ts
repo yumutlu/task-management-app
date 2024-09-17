@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TasksModule } from './tasks/tasks.module';
 import { Task } from './tasks/entities/task.entity/task.entity';
 
 @Module({
@@ -12,8 +13,7 @@ import { Task } from './tasks/entities/task.entity/task.entity';
       entities: [Task],
       synchronize: true, // Not recommended for production
     }),
+    TasksModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
