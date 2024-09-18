@@ -1,6 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { getTaskSummary } from '@/services/api';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import ErrorMessage from '@/components/ErrorMessage';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 interface TaskSummary {
@@ -17,30 +19,35 @@ interface TaskSummary {
 
 const Dashboard: React.FC = () => {
     const [summary, setSummary] = useState<TaskSummary | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchSummary = async () => {
+            setIsLoading(true);
+            setError(null);
             try {
-                const response = await axios.get<TaskSummary>('http://localhost:3000/tasks/summary');
+                const response = await getTaskSummary();
                 setSummary(response.data);
-            } catch (error) {
-                console.error('Error fetching task summary:', error);
+            } catch (err) {
+                setError('Failed to fetch task summary. Please try again later.');
+            } finally {
+                setIsLoading(false);
             }
         };
 
         fetchSummary();
     }, []);
 
-    if (!summary) {
-        return <div>Loading...</div>;
-    }
+    if (isLoading) return <LoadingSpinner />;
+    if (error) return <ErrorMessage message={error} />;
+    if (!summary) return <ErrorMessage message="No data available" />;
 
     const chartData = [
         { name: 'Completed', value: summary.completedTasks },
         { name: 'Pending', value: summary.pendingTasks },
         { name: 'In Progress', value: summary.inProgressTasks },
     ];
-
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-8">Task Management Dashboard</h1>
