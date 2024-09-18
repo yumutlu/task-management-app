@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { getTask, updateTask } from '@/services/api';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
+import { useTaskContext } from '@/context/TaskContext';
 
 interface Task {
     id: string;
@@ -15,12 +16,13 @@ interface Task {
 
 export default function EditTask({ params }: { params: { id: string } }) {
     const router = useRouter();
-    const [task, setTask] = useState<Task>({
+    const { state, dispatch } = useTaskContext();
+    const [task, setTask] = useState({
         id: '',
         title: '',
         description: '',
         dueDate: '',
-        status: 'pending'
+        status: 'pending' as 'pending' | 'in-progress' | 'completed'
     });
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -55,7 +57,9 @@ export default function EditTask({ params }: { params: { id: string } }) {
         setIsLoading(true);
         setError(null);
         try {
-            await updateTask(task.id, task);
+            const response = await updateTask(task.id, task);
+            const updatedTask: Task = response.data;
+            dispatch({ type: 'UPDATE_TASK', payload: updatedTask });
             router.push('/tasks');
         } catch (err) {
             setError('Failed to update task. Please try again later.');
