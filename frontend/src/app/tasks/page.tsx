@@ -46,7 +46,9 @@ const TaskList: React.FC = () => {
                 {tasks.map((task) => (
                     <div key={task.id} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
                         <div className="mb-4">
-                            <h2 className="text-xl font-bold">{task.title}</h2>
+                            <Link href={`/tasks/${task.id}`} className="text-xl font-bold hover:text-blue-500">
+                                {task.title}
+                            </Link>
                             <p className="text-gray-700 text-base">{task.description}</p>
                         </div>
                         <div className="flex items-center justify-between">
