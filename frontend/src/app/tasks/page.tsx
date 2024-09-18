@@ -1,7 +1,9 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import Link from 'next/link';
+import { getTasks, deleteTask } from '@/services/api';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import ErrorMessage from '@/components/ErrorMessage';
 
 interface Task {
     id: string;
@@ -13,28 +15,37 @@ interface Task {
 
 const TaskList: React.FC = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchTasks = async () => {
-            try {
-                const response = await axios.get<Task[]>(`${process.env.NEXT_PUBLIC_API_URL}/tasks`);
-                setTasks(response.data);
-            } catch (error) {
-                console.error('Error fetching tasks:', error);
-            }
-        };
-
         fetchTasks();
     }, []);
 
-    const deleteTask = async (id: string) => {
+    const fetchTasks = async () => {
+        setIsLoading(true);
+        setError(null);
         try {
-            await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${id}`);
-            setTasks(tasks.filter(task => task.id !== id));
-        } catch (error) {
-            console.error('Error deleting task:', error);
+            const response = await getTasks();
+            setTasks(response.data);
+        } catch (err) {
+            setError('Failed to fetch tasks. Please try again later.');
+        } finally {
+            setIsLoading(false);
         }
     };
+
+    const handleDeleteTask = async (id: string) => {
+        try {
+            await deleteTask(id);
+            setTasks(tasks.filter(task => task.id !== id));
+        } catch (err) {
+            setError('Failed to delete task. Please try again later.');
+        }
+    };
+
+    if (isLoading) return <LoadingSpinner />;
+    if (error) return <ErrorMessage message={error} />;
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -64,7 +75,7 @@ const TaskList: React.FC = () => {
                             <Link href={`/tasks/${task.id}/edit`} className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mr-2">
                                 Edit
                             </Link>
-                            <button onClick={() => deleteTask(task.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                            <button onClick={() => handleDeleteTask(task.id)} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                                 Delete
                             </button>
                         </div>

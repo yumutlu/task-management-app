@@ -1,7 +1,8 @@
 'use client';
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { createTask } from '@/services/api';
+import ErrorMessage from '@/components/ErrorMessage';
 
 const AddTask: React.FC = () => {
     const router = useRouter();
@@ -11,6 +12,8 @@ const AddTask: React.FC = () => {
         dueDate: '',
         status: 'pending'
     });
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
@@ -22,17 +25,22 @@ const AddTask: React.FC = () => {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true);
+        setError(null);
         try {
-            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/tasks`, task);
+            await createTask(task);
             router.push('/tasks');
-        } catch (error) {
-            console.error('Error creating task:', error);
+        } catch (err) {
+            setError('Failed to create task. Please try again later.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-6">Add New Task</h1>
+            {error && <ErrorMessage message={error} />}
             <form onSubmit={handleSubmit} className="max-w-md">
                 <div className="mb-4">
                     <label htmlFor="title" className="block text-gray-700 text-sm font-bold mb-2">
@@ -95,8 +103,9 @@ const AddTask: React.FC = () => {
                     <button
                         type="submit"
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        disabled={isLoading}
                     >
-                        Add Task
+                        {isLoading ? 'Adding...' : 'Add Task'}
                     </button>
                 </div>
             </form>

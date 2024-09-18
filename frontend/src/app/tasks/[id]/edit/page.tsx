@@ -1,7 +1,9 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { getTask, updateTask } from '@/services/api';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import ErrorMessage from '@/components/ErrorMessage';
 
 interface Task {
     id: string;
@@ -20,14 +22,20 @@ export default function EditTask({ params }: { params: { id: string } }) {
         dueDate: '',
         status: 'pending'
     });
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchTask = async () => {
+            setIsLoading(true);
+            setError(null);
             try {
-                const response = await axios.get<Task>(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${params.id}`);
+                const response = await getTask(params.id);
                 setTask(response.data);
-            } catch (error) {
-                console.error('Error fetching task:', error);
+            } catch (err) {
+                setError('Failed to fetch task details. Please try again later.');
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -44,13 +52,20 @@ export default function EditTask({ params }: { params: { id: string } }) {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true);
+        setError(null);
         try {
-            await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/tasks/${task.id}`, task);
+            await updateTask(task.id, task);
             router.push('/tasks');
-        } catch (error) {
-            console.error('Error updating task:', error);
+        } catch (err) {
+            setError('Failed to update task. Please try again later.');
+        } finally {
+            setIsLoading(false);
         }
     };
+
+    if (isLoading) return <LoadingSpinner />;
+    if (error) return <ErrorMessage message={error} />;
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -117,8 +132,9 @@ export default function EditTask({ params }: { params: { id: string } }) {
                     <button
                         type="submit"
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        disabled={isLoading}
                     >
-                        Update Task
+                        {isLoading ? 'Updating...' : 'Update Task'}
                     </button>
                 </div>
             </form>
