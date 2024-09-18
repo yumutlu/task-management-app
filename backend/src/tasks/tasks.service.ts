@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Task } from './entities/task.entity/task.entity';
+import { MoreThanOrEqual, Repository } from 'typeorm';
+import { Task, TaskStatus } from './entities/task.entity/task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 
@@ -32,5 +32,29 @@ export class TasksService {
 
   async remove(id: string): Promise<void> {
     await this.tasksRepository.delete(id);
+  }
+
+  async getTaskSummary(): Promise<any> {
+    const totalTasks = await this.tasksRepository.count();
+    const completedTasks = await this.tasksRepository.count({ where: { status: TaskStatus.COMPLETED } });
+    const pendingTasks = await this.tasksRepository.count({ where: { status: TaskStatus.PENDING } });
+    const inProgressTasks = await this.tasksRepository.count({ where: { status: TaskStatus.IN_PROGRESS } });
+
+    const upcomingTasks = await this.tasksRepository.find({
+      where: { 
+        status: TaskStatus.PENDING,
+        dueDate: MoreThanOrEqual(new Date())
+      },
+      order: { dueDate: 'ASC' },
+      take: 5
+    });
+
+    return {
+      totalTasks,
+      completedTasks,
+      pendingTasks,
+      inProgressTasks,
+      upcomingTasks
+    };
   }
 }

@@ -29,6 +29,11 @@ export class TasksController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.tasksService.remove(id);
+    return this.tasksService.remove(id);  
+  }
+
+  @Get('summary')
+  getTaskSummary() {
+    return this.tasksService.getTaskSummary();
   }
 }
