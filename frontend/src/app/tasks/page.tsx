@@ -1,52 +1,27 @@
+
 'use client';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { getTasks, deleteTask } from '@/services/api';
+import { useTaskContext } from '@/context/TaskContext';
+import { deleteTask } from '@/services/api';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
 
-interface Task {
-    id: string;
-    title: string;
-    description: string;
-    status: 'pending' | 'in-progress' | 'completed';
-    dueDate: string;
-}
-
 const TaskList: React.FC = () => {
-    const [tasks, setTasks] = useState<Task[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        fetchTasks();
-    }, []);
-
-    const fetchTasks = async () => {
-        setIsLoading(true);
-        setError(null);
-        try {
-            const response = await getTasks();
-            setTasks(response.data);
-        } catch (err) {
-            setError('Failed to fetch tasks. Please try again later.');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    const { state, dispatch } = useTaskContext();
+    const { tasks, isLoading, error } = state;
 
     const handleDeleteTask = async (id: string) => {
         try {
             await deleteTask(id);
-            setTasks(tasks.filter(task => task.id !== id));
+            dispatch({ type: 'DELETE_TASK', payload: id });
         } catch (err) {
-            setError('Failed to delete task. Please try again later.');
+            console.error('Failed to delete task:', err);
         }
     };
 
     if (isLoading) return <LoadingSpinner />;
     if (error) return <ErrorMessage message={error} />;
-
     return (
         <div className="container mx-auto px-4 py-8">
             <h1 className="text-3xl font-bold mb-6">Task List</h1>

@@ -1,16 +1,18 @@
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTaskContext } from '@/context/TaskContext';
 import { createTask } from '@/services/api';
 import ErrorMessage from '@/components/ErrorMessage';
 
 const AddTask: React.FC = () => {
     const router = useRouter();
+    const { dispatch } = useTaskContext();
     const [task, setTask] = useState({
         title: '',
         description: '',
         dueDate: '',
-        status: 'pending'
+        status: 'pending' as 'pending' | 'in-progress' | 'completed'
     });
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -28,7 +30,15 @@ const AddTask: React.FC = () => {
         setIsLoading(true);
         setError(null);
         try {
-            await createTask(task);
+            const response = await createTask(task);
+            const newTask = {
+                id: response.data.id,
+                title: response.data.title,
+                description: response.data.description,
+                dueDate: response.data.dueDate,
+                status: response.data.status
+            };
+            dispatch({ type: 'ADD_TASK', payload: newTask });
             router.push('/tasks');
         } catch (err) {
             setError('Failed to create task. Please try again later.');
@@ -114,3 +124,4 @@ const AddTask: React.FC = () => {
 };
 
 export default AddTask;
+

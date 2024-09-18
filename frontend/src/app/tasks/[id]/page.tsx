@@ -1,20 +1,15 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { getTask } from '@/services/api';
+import { useRouter } from 'next/navigation';
+import { useTaskContext } from '@/context/TaskContext';
+import { getTask, deleteTask } from '@/services/api';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
 
-interface Task {
-    id: string;
-    title: string;
-    description: string;
-    dueDate: string;
-    status: 'pending' | 'in-progress' | 'completed';
-}
-
 export default function TaskDetail({ params }: { params: { id: string } }) {
-    const [task, setTask] = useState<Task | null>(null);
+    const router = useRouter();
+    const { state, dispatch } = useTaskContext();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -24,16 +19,30 @@ export default function TaskDetail({ params }: { params: { id: string } }) {
             setError(null);
             try {
                 const response = await getTask(params.id);
-                setTask(response.data);
+                dispatch({ type: 'UPDATE_TASK', payload: response.data });
             } catch (err) {
-                setError('Failed to fetch task details. Please try again later.');
+                setError('Could not get task details. Please try again later..');
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchTask();
-    }, [params.id]);
+    }, [params.id, dispatch]);
+
+    const handleDelete = async () => {
+        if (window.confirm('Are you sure you want to delete this task?')) {
+            try {
+                await deleteTask(params.id);
+                dispatch({ type: 'DELETE_TASK', payload: params.id });
+                router.push('/tasks');
+            } catch (err) {
+                setError('The task could not be deleted. Please try again later..');
+            }
+        }
+    };
+
+    const task = state.tasks.find(t => t.id === params.id);
 
     if (isLoading) return <LoadingSpinner />;
     if (error) return <ErrorMessage message={error} />;
@@ -55,10 +64,11 @@ export default function TaskDetail({ params }: { params: { id: string } }) {
                 <div className="mb-4">
                     <span className="font-bold">Status:</span>
                     <span className={`ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-            ${task.status === 'completed' ? 'bg-green-100 text-green-800' :
+                    ${task.status === 'completed' ? 'bg-green-100 text-green-800' :
                             task.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
                                 'bg-red-100 text-red-800'}`}>
-                        {task.status}
+                        {task.status === 'completed' ? 'Tamamlandı' :
+                            task.status === 'in-progress' ? 'Devam Ediyor' : 'Beklemede'}
                     </span>
                 </div>
             </div>
@@ -66,9 +76,14 @@ export default function TaskDetail({ params }: { params: { id: string } }) {
                 <Link href="/tasks" className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
                     Back to Task List
                 </Link>
-                <Link href={`/tasks/${task.id}/edit`} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Edit Task
-                </Link>
+                <div>
+                    <Link href={`/tasks/${task.id}/edit`} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
+                        Edit Task
+                    </Link>
+                    <button onClick={handleDelete} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                        Delete Task
+                    </button>
+                </div>
             </div>
         </div>
     );

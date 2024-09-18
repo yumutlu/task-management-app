@@ -1,3 +1,4 @@
+import { TaskProvider } from '@/context/TaskContext'
 import '@/styles/globals.css'
 import { Inter } from 'next/font/google'
 
@@ -15,7 +16,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body>
+        <TaskProvider>
+          {children}
+        </TaskProvider>
+      </body>
     </html>
   )
 }
