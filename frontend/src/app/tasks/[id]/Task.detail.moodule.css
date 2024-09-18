@@ -1,0 +1,39 @@
+.container {
+  @apply max-w-2xl mx-auto p-6;
+}
+
+.title {
+  @apply text-3xl font-bold mb-6;
+}
+
+.taskMeta {
+  @apply flex justify-between items-center mb-4;
+}
+
+.taskStatus {
+  @apply px-2 py-1 rounded-full text-sm font-semibold;
+}
+
+.pending {
+  @apply bg-yellow-200 text-yellow-800;
+}
+
+.inProgress {
+  @apply bg-blue-200 text-blue-800;
+}
+
+.completed {
+  @apply bg-green-200 text-green-800;
+}
+
+.taskDueDate {
+  @apply text-sm text-gray-500;
+}
+
+.taskDescription {
+  @apply text-gray-700 mb-6;
+}
+
+.actionButtons {
+  @apply flex justify-end space-x-2;
+}

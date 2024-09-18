@@ -4,8 +4,11 @@ import { useRouter } from 'next/navigation';
 import { useTaskContext } from '@/context/TaskContext';
 import { createTask } from '@/services/api';
 import ErrorMessage from '@/components/ErrorMessage';
+import styles from '../../tasks/[id]/edit/TaskForm.module.css';
 
 const AddTask: React.FC = () => {
+
+
     const router = useRouter();
     const { dispatch } = useTaskContext();
     const [task, setTask] = useState({
@@ -48,61 +51,52 @@ const AddTask: React.FC = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">Add New Task</h1>
+        <div className={styles.container}>
+            <h1 className={styles.title}>Create New Task</h1>
             {error && <ErrorMessage message={error} />}
-            <form onSubmit={handleSubmit} className="max-w-md">
-                <div className="mb-4">
-                    <label htmlFor="title" className="block text-gray-700 text-sm font-bold mb-2">
-                        Title
-                    </label>
+            <form onSubmit={handleSubmit} className={styles.form}>
+                <div className={styles.formGroup}>
+                    <label htmlFor="title" className={styles.label}>Title</label>
                     <input
                         type="text"
                         id="title"
-                        name="title"
                         value={task.title}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className={styles.input}
                         required
                     />
                 </div>
-                <div className="mb-4">
-                    <label htmlFor="description" className="block text-gray-700 text-sm font-bold mb-2">
-                        Description
-                    </label>
+                <div className={styles.formGroup}>
+                    <label htmlFor="description" className={styles.label}>Description</label>
                     <textarea
                         id="description"
                         name="description"
                         value={task.description}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className={styles.textarea}
                         rows={3}
                     ></textarea>
                 </div>
-                <div className="mb-4">
-                    <label htmlFor="dueDate" className="block text-gray-700 text-sm font-bold mb-2">
-                        Due Date
-                    </label>
+                <div className={styles.formGroup}>
+                    <label htmlFor="dueDate" className={styles.label}>Due Date</label>
                     <input
                         type="date"
                         id="dueDate"
                         name="dueDate"
                         value={task.dueDate}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className={styles.input}
                         required
                     />
                 </div>
-                <div className="mb-4">
-                    <label htmlFor="status" className="block text-gray-700 text-sm font-bold mb-2">
-                        Status
-                    </label>
+                <div className={styles.formGroup}>
+                    <label htmlFor="status" className={styles.label}>Status</label>
                     <select
                         id="status"
                         name="status"
                         value={task.status}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className={styles.select}
                     >
                         <option value="pending">Pending</option>
                         <option value="in-progress">In Progress</option>
@@ -112,10 +106,10 @@ const AddTask: React.FC = () => {
                 <div className="flex items-center justify-between">
                     <button
                         type="submit"
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        className={styles.submitButton}
                         disabled={isLoading}
                     >
-                        {isLoading ? 'Adding...' : 'Add Task'}
+                        {isLoading ? 'Adding...' : 'Create Task'}
                     </button>
                 </div>
             </form>

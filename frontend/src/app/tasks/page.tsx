@@ -1,4 +1,3 @@
-
 'use client';
 import React from 'react';
 import Link from 'next/link';
@@ -6,7 +5,7 @@ import { useTaskContext } from '@/context/TaskContext';
 import { deleteTask } from '@/services/api';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
-
+import styles from './TaskList.module.css';
 const TaskList: React.FC = () => {
     const { state, dispatch } = useTaskContext();
     const { tasks, isLoading, error } = state;
@@ -23,30 +22,27 @@ const TaskList: React.FC = () => {
     if (isLoading) return <LoadingSpinner />;
     if (error) return <ErrorMessage message={error} />;
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">Task List</h1>
+        <div className={styles.container}>
+            <h1 className={styles.title}>Task List</h1>
             <Link href="/tasks/new" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block">
                 Add New Task
             </Link>
-            <div className="mt-6">
+            <div className={styles.taskList}>
                 {tasks.map((task) => (
-                    <div key={task.id} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col">
+                    <div key={task.id} className={styles.taskItem}>
                         <div className="mb-4">
-                            <Link href={`/tasks/${task.id}`} className="text-xl font-bold hover:text-blue-500">
+                            <Link href={`/tasks/${task.id}`} className={styles.taskTitle}>
                                 {task.title}
                             </Link>
-                            <p className="text-gray-700 text-base">{task.description}</p>
+                            <p className={styles.taskDescription}>{task.description}</p>
                         </div>
-                        <div className="flex items-center justify-between">
-                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                ${task.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                    task.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
-                                        'bg-red-100 text-red-800'}`}>
+                        <div className={styles.taskMeta}>
+                            <span className={`${styles.taskStatus} ${styles[task.status]}`}>
                                 {task.status}
                             </span>
-                            <span className="text-sm text-gray-500">Due: {new Date(task.dueDate).toLocaleDateString()}</span>
+                            <span className={styles.taskDueDate}>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
                         </div>
-                        <div className="mt-4 flex justify-end">
+                        <div className={styles.taskActions}>
                             <Link href={`/tasks/${task.id}/edit`} className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mr-2">
                                 Edit
                             </Link>

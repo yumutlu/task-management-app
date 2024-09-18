@@ -1,0 +1,51 @@
+.container {
+    @apply max-w-4xl mx-auto;
+  }
+  
+  .title {
+    @apply text-3xl font-bold mb-6;
+  }
+  
+  .taskList {
+    @apply space-y-4;
+  }
+  
+  .taskItem {
+    @apply bg-white shadow-md rounded-lg p-6;
+  }
+  
+  .taskTitle {
+    @apply text-xl font-semibold mb-2;
+  }
+  
+  .taskDescription {
+    @apply text-gray-600 mb-4;
+  }
+  
+  .taskMeta {
+    @apply flex justify-between items-center mb-4;
+  }
+  
+  .taskStatus {
+    @apply px-2 py-1 rounded-full text-sm font-semibold;
+  }
+  
+  .pending {
+    @apply bg-yellow-200 text-yellow-800;
+  }
+  
+  .in-progress {
+    @apply bg-blue-200 text-blue-800;
+  }
+  
+  .completed {
+    @apply bg-green-200 text-green-800;
+  }
+  
+  .taskDueDate {
+    @apply text-sm text-gray-500;
+  }
+  
+  .taskActions {
+    @apply flex justify-end space-x-2;
+  }

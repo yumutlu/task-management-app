@@ -1,0 +1,43 @@
+.container {
+  @apply max-w-4xl mx-auto p-6;
+}
+
+.title {
+  @apply text-3xl font-bold mb-6;
+}
+
+.statsGrid {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-6 mb-8;
+}
+
+.statCard {
+  @apply bg-white shadow-md rounded-lg p-6;
+}
+
+.statTitle {
+  @apply text-lg font-semibold mb-2;
+}
+
+.statValue {
+  @apply text-3xl font-bold;
+}
+
+.recentTasksList {
+  @apply bg-white shadow-md rounded-lg p-6;
+}
+
+.recentTasksTitle {
+  @apply text-xl font-semibold mb-4;
+}
+
+.taskItem {
+  @apply border-b border-gray-200 py-4 last:border-b-0;
+}
+
+.taskTitle {
+  @apply text-lg font-medium mb-1;
+}
+
+.taskMeta {
+  @apply text-sm text-gray-600;
+}
