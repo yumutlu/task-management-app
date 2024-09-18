@@ -5,7 +5,7 @@ import { getTask, updateTask } from '@/services/api';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
 import { useTaskContext } from '@/context/TaskContext';
-
+import styles from './TaskForm.module.css';
 interface Task {
     id: string;
     title: string;
@@ -72,70 +72,62 @@ export default function EditTask({ params }: { params: { id: string } }) {
     if (error) return <ErrorMessage message={error} />;
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">Edit Task</h1>
-            <form onSubmit={handleSubmit} className="max-w-md">
-                <div className="mb-4">
-                    <label htmlFor="title" className="block text-gray-700 text-sm font-bold mb-2">
-                        Title
-                    </label>
+        <div className={styles.container}>
+            <h1 className={styles.title}>Edit Task</h1>
+            <form onSubmit={handleSubmit} className={styles.form}>
+                <div className={styles.formGroup}>
+                    <label htmlFor="title" className={styles.label}>Title</label>
                     <input
                         type="text"
                         id="title"
                         name="title"
                         value={task.title}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className={styles.input}
                         required
                     />
                 </div>
-                <div className="mb-4">
-                    <label htmlFor="description" className="block text-gray-700 text-sm font-bold mb-2">
-                        Description
-                    </label>
+                <div className={styles.formGroup}>
+                    <label htmlFor="description" className={styles.label}>Description</label>
                     <textarea
                         id="description"
                         name="description"
                         value={task.description}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className={styles.textarea}
                         rows={3}
                     ></textarea>
                 </div>
-                <div className="mb-4">
-                    <label htmlFor="dueDate" className="block text-gray-700 text-sm font-bold mb-2">
-                        Due Date
-                    </label>
+                <div className={styles.formGroup}>
+                    <label htmlFor="dueDate" className={styles.label}>Due Date</label>
                     <input
                         type="date"
                         id="dueDate"
                         name="dueDate"
                         value={task.dueDate.split('T')[0]}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className={styles.input}
                         required
                     />
                 </div>
-                <div className="mb-4">
-                    <label htmlFor="status" className="block text-gray-700 text-sm font-bold mb-2">
-                        Status
-                    </label>
+                <div className={styles.formGroup}>
+                    <label htmlFor="status" className={styles.label}>Status</label>
                     <select
                         id="status"
                         name="status"
                         value={task.status}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className={styles.select}
                     >
                         <option value="pending">Pending</option>
                         <option value="in-progress">In Progress</option>
                         <option value="completed">Completed</option>
                     </select>
                 </div>
-                <div className="flex items-center justify-between">
+                <div className={styles.formGroup}>
                     <button
                         type="submit"
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        className={styles.submitButton}
                         disabled={isLoading}
                     >
                         {isLoading ? 'Updating...' : 'Update Task'}

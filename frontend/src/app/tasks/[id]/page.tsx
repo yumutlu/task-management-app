@@ -6,6 +6,7 @@ import { useTaskContext } from '@/context/TaskContext';
 import { getTask, deleteTask } from '@/services/api';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
+import styles from './TaskDetail.module.css';
 
 export default function TaskDetail({ params }: { params: { id: string } }) {
     const router = useRouter();
@@ -49,41 +50,22 @@ export default function TaskDetail({ params }: { params: { id: string } }) {
     if (!task) return <ErrorMessage message="Task not found" />;
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-6">Task Details</h1>
-            <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <div className="mb-4">
-                    <h2 className="text-xl font-bold">{task.title}</h2>
-                </div>
-                <div className="mb-4">
-                    <p className="text-gray-700">{task.description}</p>
-                </div>
-                <div className="mb-4">
-                    <span className="font-bold">Due Date:</span> {new Date(task.dueDate).toLocaleDateString()}
-                </div>
-                <div className="mb-4">
-                    <span className="font-bold">Status:</span>
-                    <span className={`ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                    ${task.status === 'completed' ? 'bg-green-100 text-green-800' :
-                            task.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
-                                'bg-red-100 text-red-800'}`}>
-                        {task.status === 'completed' ? 'Tamamlandı' :
-                            task.status === 'in-progress' ? 'Devam Ediyor' : 'Beklemede'}
-                    </span>
-                </div>
+        <div className={styles.container}>
+            <h1 className={styles.title}>{task.title}</h1>
+            <div className={styles.taskMeta}>
+                <span className={`${styles.taskStatus} ${styles[task.status]}`}>
+                    {task.status}
+                </span>
+                <span className={styles.taskDueDate}>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
             </div>
-            <div className="flex justify-between">
-                <Link href="/tasks" className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    Back to Task List
+            <p className={styles.taskDescription}>{task.description}</p>
+            <div className={styles.actionButtons}>
+                <Link href={`/tasks/${task.id}/edit`} className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                    Edit
                 </Link>
-                <div>
-                    <Link href={`/tasks/${task.id}/edit`} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2">
-                        Edit Task
-                    </Link>
-                    <button onClick={handleDelete} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                        Delete Task
-                    </button>
-                </div>
+                <button onClick={handleDelete} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                    Delete
+                </button>
             </div>
         </div>
     );

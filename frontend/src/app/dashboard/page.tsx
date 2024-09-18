@@ -4,6 +4,7 @@ import { getTaskSummary } from '@/services/api';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import styles from './Dashboard.module.css';
 
 interface TaskSummary {
     totalTasks: number;
@@ -49,35 +50,34 @@ const Dashboard: React.FC = () => {
         { name: 'In Progress', value: summary.inProgressTasks },
     ];
     return (
-        <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold mb-8">Task Management Dashboard</h1>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                    <h2 className="text-xl font-semibold mb-4">Task Statistics</h2>
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={chartData}>
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" />
-                            <YAxis />
-                            <Tooltip />
-                            <Legend />
-                            <Bar dataKey="value" fill="#8884d8" />
-                        </BarChart>
-                    </ResponsiveContainer>
+        <div className={styles.container}>
+            <h1 className={styles.title}>Dashboard</h1>
+            <div className={styles.statsGrid}>
+                <div className={styles.statCard}>
+                    <h2 className={styles.statTitle}>Total Tasks</h2>
+                    <p className={styles.statValue}>{summary.totalTasks}</p>
                 </div>
-
-                <div className="bg-white p-6 rounded-lg shadow-md">
-                    <h2 className="text-xl font-semibold mb-4">Upcoming Tasks</h2>
-                    <ul className="space-y-2">
-                        {summary.upcomingTasks.map((task) => (
-                            <li key={task.id} className="flex justify-between items-center">
-                                <span>{task.title}</span>
-                                <span className="text-sm text-gray-500">{new Date(task.dueDate).toLocaleDateString()}</span>
-                            </li>
-                        ))}
-                    </ul>
+                <div className={styles.statCard}>
+                    <h2 className={styles.statTitle}>Completed Tasks</h2>
+                    <p className={styles.statValue}>{summary.completedTasks}</p>
                 </div>
+                <div className={styles.statCard}>
+                    <h2 className={styles.statTitle}>Pending Tasks</h2>
+                    <p className={styles.statValue}>{summary.pendingTasks}</p>
+                </div>
+                <div className={styles.statCard}>
+                    <h2 className={styles.statTitle}>In Progress Tasks</h2>
+                    <p className={styles.statValue}>{summary.inProgressTasks}</p>
+                </div>
+            </div>
+            <div className={styles.recentTasksList}>
+                <h2 className={styles.recentTasksTitle}>Recent Tasks</h2>
+                {summary.upcomingTasks.map((task) => (
+                    <div key={task.id} className={styles.taskItem}>
+                        <h3 className={styles.taskTitle}>{task.title}</h3>
+                        <p className={styles.taskMeta}>Due: {new Date(task.dueDate).toLocaleDateString()}</p>
+                    </div>
+                ))}
             </div>
         </div>
     );
