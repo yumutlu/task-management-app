@@ -1,0 +1,49 @@
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.taskMeta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.taskStatus {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.pending {
+    background-color: #ffd700;
+}
+
+.in-progress {
+    background-color: #1e90ff;
+    color: white;
+}
+
+.completed {
+    background-color: #32cd32;
+    color: white;
+}
+
+.taskDueDate {
+    font-style: italic;
+}
+
+.taskDescription {
+    margin-bottom: 20px;
+}
+
+.actionButtons {
+    display: flex;
+    gap: 10px;
+}

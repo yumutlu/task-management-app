@@ -1,43 +1,54 @@
 .container {
-  @apply max-w-4xl mx-auto p-6;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
 }
 
 .title {
-  @apply text-3xl font-bold mb-6;
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 
-.statsGrid {
-  @apply grid grid-cols-1 md:grid-cols-3 gap-6 mb-8;
+.summaryCards {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
 }
 
-.statCard {
-  @apply bg-white shadow-md rounded-lg p-6;
-}
-
-.statTitle {
-  @apply text-lg font-semibold mb-2;
-}
-
-.statValue {
-  @apply text-3xl font-bold;
+.card {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 5px;
+  width: 45%;
 }
 
 .recentTasksList {
-  @apply bg-white shadow-md rounded-lg p-6;
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 5px;
 }
 
 .recentTasksTitle {
-  @apply text-xl font-semibold mb-4;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.taskLink {
+  text-decoration: none;
+  color: inherit;
 }
 
 .taskItem {
-  @apply border-b border-gray-200 py-4 last:border-b-0;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
 }
 
 .taskTitle {
-  @apply text-lg font-medium mb-1;
+  font-weight: bold;
 }
 
-.taskMeta {
-  @apply text-sm text-gray-600;
+.taskDueDate {
+  color: #666;
 }

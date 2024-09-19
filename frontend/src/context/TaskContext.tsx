@@ -1,3 +1,5 @@
+'use client';  // Bu satırı dosyanın en üstüne ekleyin
+
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { getTasks, createTask, updateTask, deleteTask } from '@/services/api';
 
