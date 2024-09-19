@@ -1,29 +1,24 @@
-import Layout from '@/components/Layout'
-import { AuthProvider } from '@/context/AuthContext'
-import { TaskProvider } from '@/context/TaskContext'
-import '@/styles/globals.css'
+import { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import '@/styles/globals.css'
+import RootLayout from './RootLayout'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'Task Management App',
   description: 'A full-stack task management application',
 }
 
-export default function RootLayout({
+export default function Layout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
     <html lang="en">
-      <body>
-        <AuthProvider>
-          <TaskProvider>
-            <Layout>{children}</Layout>
-          </TaskProvider>
-        </AuthProvider>
+      <body className={inter.className}>
+        <RootLayout>{children}</RootLayout>
       </body>
     </html>
   )

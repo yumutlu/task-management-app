@@ -1,36 +1,70 @@
 .container {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
 }
 
 .title {
-  font-size: 24px;
-  margin-bottom: 20px;
+  font-size: 28px;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
 .summaryCards {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .card {
   background-color: #f0f0f0;
   padding: 20px;
-  border-radius: 5px;
-  width: 45%;
+  border-radius: 10px;
+  width: 30%;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.cardValue {
+  font-size: 24px;
+  font-weight: bold;
+  color: #36A2EB;
+}
+
+.chartContainer {
+  background-color: #f0f0f0;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.chartContainer h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.chartWrapper {
+  height: 300px;
 }
 
 .recentTasksList {
   background-color: #f0f0f0;
   padding: 20px;
-  border-radius: 5px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .recentTasksTitle {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: 20px;
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 .taskLink {
@@ -41,8 +75,13 @@
 .taskItem {
   display: flex;
   justify-content: space-between;
-  padding: 10px 0;
+  padding: 15px;
   border-bottom: 1px solid #ddd;
+  transition: background-color 0.3s;
+}
+
+.taskItem:hover {
+  background-color: #e0e0e0;
 }
 
 .taskTitle {
