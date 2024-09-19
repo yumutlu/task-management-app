@@ -5,6 +5,7 @@ import { useTaskContext } from '@/context/TaskContext';
 import { getSummary } from '@/services/api';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import ErrorMessage from '@/components/ErrorMessage';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import styles from './Dashboard.module.css';
 
 interface Summary {
@@ -17,7 +18,7 @@ interface Summary {
     }>;
 }
 
-export default function Dashboard() {
+const Dashboard: React.FC = () => {
     const { state } = useTaskContext();
     const [summary, setSummary] = useState<Summary | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -74,4 +75,12 @@ export default function Dashboard() {
             </div>
         </div>
     );
-}
+};
+
+const ProtectedDashboard: React.FC = () => (
+    <ProtectedRoute>
+        <Dashboard />
+    </ProtectedRoute>
+);
+
+export default ProtectedDashboard;

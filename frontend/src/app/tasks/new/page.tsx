@@ -1,96 +1,81 @@
 'use client';
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import { useTaskContext } from '@/context/TaskContext';
+import { useRouter } from 'next/navigation';
 import { createTask } from '@/services/api';
-import ErrorMessage from '@/components/ErrorMessage';
-import styles from '../../tasks/[id]/edit/TaskForm.module.css';
+import styles from './NewTask.module.css';
 
-const AddTask: React.FC = () => {
+interface Task {
+    id: string;
+    title: string;
+    description: string;
+    status: "pending" | "in-progress" | "completed";
+    dueDate: string;
+}
 
-
+const NewTask: React.FC = () => {
     const router = useRouter();
     const { dispatch } = useTaskContext();
-    const [task, setTask] = useState({
+    const [task, setTask] = useState<Omit<Task, 'id'>>({
         title: '',
         description: '',
-        dueDate: '',
-        status: 'pending' as 'pending' | 'in-progress' | 'completed'
+        status: 'pending',
+        dueDate: ''
     });
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setTask(prevTask => ({
-            ...prevTask,
-            [name]: value
-        }));
-    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIsLoading(true);
-        setError(null);
         try {
             const response = await createTask(task);
-            const newTask = {
+            const newTask: Task = {
                 id: response.data.id,
                 title: response.data.title,
                 description: response.data.description,
-                dueDate: response.data.dueDate,
-                status: response.data.status
+                status: response.data.status,
+                dueDate: response.data.dueDate
             };
             dispatch({ type: 'ADD_TASK', payload: newTask });
             router.push('/tasks');
         } catch (err) {
-            setError('Failed to create task. Please try again later.');
-        } finally {
-            setIsLoading(false);
+            console.error('Failed to create task:', err);
+            // TODO: Show error message to user
         }
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setTask(prevTask => ({ ...prevTask, [name]: value }));
     };
 
     return (
         <div className={styles.container}>
             <h1 className={styles.title}>Create New Task</h1>
-            {error && <ErrorMessage message={error} />}
             <form onSubmit={handleSubmit} className={styles.form}>
                 <div className={styles.formGroup}>
-                    <label htmlFor="title" className={styles.label}>Title</label>
+                    <label htmlFor="title">Title</label>
                     <input
                         type="text"
                         id="title"
+                        name="title"
                         value={task.title}
                         onChange={handleChange}
-                        className={styles.input}
                         required
+                        className={styles.input}
                     />
                 </div>
                 <div className={styles.formGroup}>
-                    <label htmlFor="description" className={styles.label}>Description</label>
+                    <label htmlFor="description">Description</label>
                     <textarea
                         id="description"
                         name="description"
                         value={task.description}
                         onChange={handleChange}
                         className={styles.textarea}
-                        rows={3}
-                    ></textarea>
-                </div>
-                <div className={styles.formGroup}>
-                    <label htmlFor="dueDate" className={styles.label}>Due Date</label>
-                    <input
-                        type="date"
-                        id="dueDate"
-                        name="dueDate"
-                        value={task.dueDate}
-                        onChange={handleChange}
-                        className={styles.input}
-                        required
                     />
                 </div>
                 <div className={styles.formGroup}>
-                    <label htmlFor="status" className={styles.label}>Status</label>
+                    <label htmlFor="status">Status</label>
                     <select
                         id="status"
                         name="status"
@@ -103,19 +88,28 @@ const AddTask: React.FC = () => {
                         <option value="completed">Completed</option>
                     </select>
                 </div>
-                <div className="flex items-center justify-between">
-                    <button
-                        type="submit"
-                        className={styles.submitButton}
-                        disabled={isLoading}
-                    >
-                        {isLoading ? 'Adding...' : 'Create Task'}
-                    </button>
+                <div className={styles.formGroup}>
+                    <label htmlFor="dueDate">Due Date</label>
+                    <input
+                        type="date"
+                        id="dueDate"
+                        name="dueDate"
+                        value={task.dueDate}
+                        onChange={handleChange}
+                        required
+                        className={styles.input}
+                    />
                 </div>
+                <button type="submit" className="btn btn-blue">Create Task</button>
             </form>
         </div>
     );
 };
 
-export default AddTask;
+const ProtectedNewTask: React.FC = () => (
+    <ProtectedRoute>
+        <NewTask />
+    </ProtectedRoute>
+);
 
+export default ProtectedNewTask;
