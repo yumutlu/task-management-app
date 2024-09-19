@@ -1,4 +1,5 @@
 import Layout from '@/components/Layout'
+import { AuthProvider } from '@/context/AuthContext'
 import { TaskProvider } from '@/context/TaskContext'
 import '@/styles/globals.css'
 import { Inter } from 'next/font/google'
@@ -17,10 +18,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <TaskProvider>
-          <Layout>{children}</Layout>
-        </TaskProvider>
+      <body>
+        <AuthProvider>
+          <TaskProvider>
+            <Layout>{children}</Layout>
+          </TaskProvider>
+        </AuthProvider>
       </body>
     </html>
   )

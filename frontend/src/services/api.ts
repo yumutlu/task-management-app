@@ -16,5 +16,10 @@ export const getTaskSummary = () => api.get('/tasks/summary');
 export const getSummary = async () => {
     return api.get('/tasks/summary');
 };
+export const login = (credentials: { username: string; password: string }) =>
+  api.post('/auth/login', credentials);
+
+export const register = (userData: { username: string; password: string }) =>
+  api.post('/auth/register', userData);
 
 export default api;
